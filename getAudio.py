@@ -13,5 +13,5 @@ def download_video_extract_audio(url, output_filename):
 
 if __name__ == "__main__":
     youtube_url = "https://www.youtube.com/watch?v=mR8TS7kkFEk"
-    output_filename = "audio_file.m4a"
+    output_filename = "audio_file.wav"
     download_video_extract_audio(youtube_url, output_filename)

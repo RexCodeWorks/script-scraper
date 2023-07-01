@@ -1,26 +1,31 @@
-from google.cloud import speech_v1p1beta1 as speech
-import io
+from google.cloud import speech
 
 
-def transcribe_file(speech_file):
+def run_quickstart(speech_file_gcs_uri: str) -> speech.LongRunningRecognizeResponse:
+    # Instantiates a client
     client = speech.SpeechClient()
 
-    with io.open(speech_file, "rb") as audio_file:
-        content = audio_file.read()
+    audio = speech.RecognitionAudio(uri=speech_file_gcs_uri)
 
-    audio = speech.RecognitionAudio(content=content)
     config = speech.RecognitionConfig(
-        encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-        # audio_channel_count=2,             # Update this line
-        language_code="en-EN",
+        encoding=speech.RecognitionConfig.AudioEncoding.WEBM_OPUS,
+        sample_rate_hertz=48000,
+        audio_channel_count=2,
+        language_code="en-US",
     )
 
-    response = client.recognize(config=config, audio=audio)
+    # Detects speech in the audio file using LongRunningRecognize with GCS URI
+    operation = client.long_running_recognize(config=config, audio=audio)
+
+    print("Waiting for operation to complete...")
+    response = operation.result()
+
+    print("Transcription results:")
+    print(response)
 
     for result in response.results:
-        print("Transcript: {}".format(result.alternatives[0].transcript))
-
+        print(f"Transcript: {result.alternatives[0].transcript}")
 
 if __name__ == "__main__":
-    audio_file_path = "audio_file.m4a"
-   
+    gcs_audio_uri = "gs://shotify-speech-to-text-audio/audio_file.wav"
+    run_quickstart(gcs_audio_uri)
