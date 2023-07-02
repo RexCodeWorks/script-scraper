@@ -12,7 +12,7 @@ def run_quickstart(speech_file_gcs_uri: str) -> speech.LongRunningRecognizeRespo
         sample_rate_hertz=48000,
         audio_channel_count=2,
         language_code="en-US",
-        enable_word_time_offsets=True,  # timestamp information
+        enable_word_time_offsets=True,
     )
 
     # Detects speech in the audio file using LongRunningRecognize with GCS URI
